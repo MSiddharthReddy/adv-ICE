@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import MapView from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import axios from 'axios';
 import {
   AppRegistry,
@@ -90,6 +90,7 @@ axios.post(markers,{
     return (
       <View style={styles.container}>
         <MapView
+          provider={PROVIDER_GOOGLE}
           style={{
             flex: 1,
             height,

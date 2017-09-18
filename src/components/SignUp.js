@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Actions } from 'react-native-router-flux';
-import { View, TextInput, Dimensions, Image } from 'react-native';
+import { View, TextInput, Dimensions, Image, Alert } from 'react-native';
 import { CardSection } from './ModalComponents';
 import { Button, Content } from './CommonComponents';
 
-const signUp = ``;
+const signUp = `https://ireports.herokuapp.com/signup`;
 class SignUp extends Component {
 
   constructor() {
@@ -21,30 +21,45 @@ class SignUp extends Component {
   }
 
   _check() {
-    
+    const emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let emailCheck = emailRegex.test(this.state.email);
+    let passwordCheck = this.state.password.length > 5;
+    let passwordMatch = (this.state.password === this.state.retypePass);
+    console.log(`EmailCheck: ${emailCheck}, passwordCheck: ${passwordCheck}, passwordMatch: ${passwordMatch}`)
+    return (emailCheck && passwordCheck && passwordMatch);
   }
 
   _signUp(){
     if(this._check()) {
-      // axios.post(signUp,{
-      //   email: this.state.email,
-      //   userId: this.state.userId,
-      //   password: this.state.password
-      // }).then( res => {
-      //   console.log(res);
-      //   if(res.status === 200) {
-      //     Actions.login();
-      //   } else {
-      //     this.setState({
-      //       error: true
-      //     })
-      //   }
-      // }).catch( e => {
-      //   console.log(e);
-      //   this.setState({
-      //     error: true
-      //   })
-      // });
+      console.log('Sending Data: ', this.state)
+      axios.post(signUp,{
+        email: this.state.email,
+        username: this.state.userId,
+        password: this.state.password
+      }).then( res => {
+        console.log(res);
+        if(res.status === 201) {
+          Actions.map();
+        } else {
+          this.setState({
+            error: true
+          })
+        }
+      }).catch( e => {
+        console.log(e);
+        this.setState({
+          error: true
+        })
+      });
+    } else {
+      Alert.alert(
+        'Check Your entry',
+        'Please check your details enteres. One or more credentials dont match the criteria.',
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ],
+        { cancelable: true }
+      )
     }
   }
 
@@ -103,7 +118,9 @@ class SignUp extends Component {
         value={this.state.retypePass}
       />
       <CardSection>
-      <Button onPress={() => { Actions.login(); }}> SignUp </Button>
+      <Button onPress={() => {
+        this._signUp();
+       }}> SignUp </Button>
       </CardSection>
   </View>
   );

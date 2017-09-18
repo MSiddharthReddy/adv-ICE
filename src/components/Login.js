@@ -4,9 +4,8 @@ import { Actions } from 'react-native-router-flux';
 import { View, TextInput, Dimensions, Image } from 'react-native';
 import { CardSection } from './ModalComponents';
 import { Button, Content } from './CommonComponents';
-// import { Footer, Policy } from './DescText';
 
-const login = ``;
+const login = `https://ireports.herokuapp.com/login`;
 
 class Login extends Component {
 
@@ -21,25 +20,24 @@ class Login extends Component {
 
   _login() {
     // @ TODO this will be replaced when the API is provided.
-    // axios.post(login,{
-    //   id: this.state.id,
-    //   password: this.state.password
-    // }).then( res => {
-    //   console.log(res);
-    //   if(res.status === 200) {
-    //     Actions.map();
-    //   } else {
-    //     this.setState({
-    //       error: true
-    //     })
-    //   }
-    // }).catch( e => {
-    //   console.log(e);
-    //   this.setState({
-    //     error: true
-    //   })
-    // });
-    Actions.map();
+    axios.post(login,{
+      id: this.state.id,
+      password: this.state.password
+    }).then( res => {
+      console.log(res);
+      if(res.status === 201) {
+        Actions.map();
+      } else {
+        this.setState({
+          error: true
+        })
+      }
+    }).catch( e => {
+      console.log(e);
+      this.setState({
+        error: true
+      })
+    });
   }
 
   _returnError(){
